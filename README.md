@@ -15,6 +15,12 @@ A Promtheus Exporter for the [VPN Client Gluetun](https://github.com/qdm12/gluet
 The Exporter can be deployed Standalone in this Variation it will not Collect the Troughput of the Tunnel, in this Installation only the VPN Data from the API Endpoint is available.
 ```bash
 docker build -t gluetun-exporter:standalone --file Dockerfile-standalone .
+docker run -it -p 8001:8001\
+  -e GLUETUN_HOST=localhost\
+  -e GLUETUN_PORT=8000\
+  -e EXPORTER_INTERVAL=30\
+  -e GLUETUN_APIKEY=apikey\
+  gluetun-exporter:standalone
 ```
 
 ### Bundled
@@ -22,25 +28,36 @@ The Exporter can be deployed Bundled with Gluetun self, the docker Image get bui
 In this Installation the Troughput of the Tunnel is available, it get's collected with the Usage of [netlink](github.com/vishvananda/netlink) and the Link Statistics.
 ```bash
 docker build -t gluetun-exporter:bundled --file Dockerfile-bundled .
+docker run -it -p 8001:8001\
+  -e GLUETUN_HOST=localhost\
+  -e GLUETUN_PORT=8000\
+  -e EXPORTER_INTERVAL=30\
+  -e GLUETUN_APIKEY=apikey\
+  --cap-add net_admin\
+  gluetun-exporter:bundled
 ```
 
 ## Configuration
 The Configuration is currently only available via the Environment Vars:
 ```env
-GLUETUN_HOST=localhost
-GLUETUN_PORT=8000
-EXPORTER_PORT=8001
-EXPORTER_ROLE=gluetun
-EXPORTER_INTERVAL=30
+GLUETUN_HOST=localhost # Host of the Gluetun API without http or https (only http Support)
+GLUETUN_PORT=8000 # Port of the Gluetun API
+EXPORTER_PORT=8001 # Port of the Exporter
+EXPORTER_ROLE=gluetun # Not implemented
+EXPORTER_INTERVAL=30 # Interval of the Metrics Scrape
 ```
 
 The Authentication is either via Usernername/Password Combi or API-Key:
 ```env
-GLUETUN_USERNAME=username
-GLUETUN_PASSWORD=password
+GLUETUN_USERNAME=username # Username of the Role
+GLUETUN_PASSWORD=password # Password of the Role
 # OR
-GLUETUN_APIKEY=apikey
+GLUETUN_APIKEY=apikey # ApiKey of the Role
 ```
+the following Routes are needed in the role
+- GET /v1/vpn/status
+- GET /v1/publicip/ip
+- GET /v1/openvpn/portforwarded
 
 ## Usage
 
