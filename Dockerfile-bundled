@@ -1,0 +1,26 @@
+FROM golang:1.23-alpine3.20 AS build
+RUN apk --update add g++ findutils
+WORKDIR /tmp/gobuild
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . ./
+RUN go build -trimpath -o gluetun-exporter main.go
+
+FROM qmcgaw/gluetun
+
+COPY --from=build /tmp/gobuild/gluetun-exporter /opt/gluetun-exporter
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8000/tcp 8888/tcp 8388/tcp 8388/udp 8001/tcp
+
+# Set the default ENVIRONMENT variables
+ENV GLUETUN_HOST=localhost\
+    GLUETUN_PORT=8000\
+    EXPORTER_PORT=8001\
+    EXPORTER_ROLE=gluetun\
+    EXPORTER_INTERVAL=30\
+    EXPORTER_BUNDLED=true\
+    VPN_INTERFACE=tun0
+
+ENTRYPOINT ["/entrypoint.sh"]
