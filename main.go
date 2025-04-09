@@ -50,16 +50,13 @@ func main() {
 	defer ticker.Stop()
 	controlServer := gluetun.New()
 
-	for {
-		select {
-		case <-ticker.C:
-			// Collect metrics from the control server
-			logger.Info("Updating Metrics...")
-			if bundled {
-				linkstats.Scrape(interfaceName)
-			}
-			controlServer.Collect()
-			logger.Info("Updated Metrics")
+	for range ticker.C {
+		// Collect metrics from the control server
+		logger.Info("Updating Metrics...")
+		if bundled {
+			linkstats.Scrape(interfaceName)
 		}
+		controlServer.Collect()
+		logger.Info("Updated Metrics")
 	}
 }
