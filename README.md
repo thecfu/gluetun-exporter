@@ -16,8 +16,7 @@ The Exporter can be deployed Standalone in this Variation it will not Collect th
 ```bash
 docker build -t gluetun-exporter:standalone --file Dockerfile-standalone .
 docker run -it -p 8001:8001\
-  -e GLUETUN_HOST=localhost\
-  -e GLUETUN_PORT=8000\
+  -e GLUETUN_URL=http://localhost:8000\
   -e EXPORTER_INTERVAL=30\
   -e GLUETUN_APIKEY=apikey\
   gluetun-exporter:standalone
@@ -29,8 +28,7 @@ In this Installation the Troughput of the Tunnel is available, it get's collecte
 ```bash
 docker build -t gluetun-exporter:bundled --file Dockerfile-bundled .
 docker run -it -p 8001:8001\
-  -e GLUETUN_HOST=localhost\
-  -e GLUETUN_PORT=8000\
+  -e GLUETUN_URL=http://localhost:8000\
   -e EXPORTER_INTERVAL=30\
   -e GLUETUN_APIKEY=apikey\
   --cap-add net_admin\
@@ -40,11 +38,11 @@ docker run -it -p 8001:8001\
 ## Configuration
 The Configuration is currently only available via the Environment Vars:
 ```env
-GLUETUN_HOST=localhost # Host of the Gluetun API without http or https (only http Support)
-GLUETUN_PORT=8000 # Port of the Gluetun API
+GLUETUN_URL=http://localhost:8000 # The Url of the Gluetun API Endpoint
 EXPORTER_PORT=8001 # Port of the Exporter
 EXPORTER_ROLE=gluetun # Not implemented
 EXPORTER_INTERVAL=30 # Interval of the Metrics Scrape
+EXPORTER_DEBUG=false # Activate the Debuging Logs
 ```
 
 The Authentication is either via Usernername/Password Combi or API-Key:

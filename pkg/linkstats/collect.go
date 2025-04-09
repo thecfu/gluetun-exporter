@@ -1,8 +1,8 @@
 package linkstats
 
 import (
+	"github.com/thecfu/gluetun-exporter/pkg/linkstats/types"
 	"github.com/thecfu/gluetun-exporter/pkg/promexporter"
-	"github.com/thecfu/gluetun-exporter/pkg/types"
 	"github.com/vishvananda/netlink"
 )
 
