@@ -2,7 +2,7 @@ package promexporter
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/thecfu/gluetun-exporter/pkg/types"
+	"github.com/thecfu/gluetun-exporter/pkg/linkstats/types"
 )
 
 var (

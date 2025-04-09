@@ -2,20 +2,19 @@ package gluetun
 
 import (
 	"encoding/json"
+	"github.com/thecfu/gluetun-exporter/pkg/gluetun/types"
 	"github.com/thecfu/gluetun-exporter/pkg/promexporter"
-	"github.com/thecfu/gluetun-exporter/pkg/types"
 	"net/http"
 	"os"
 )
 
 func (s *Server) Collect() {
 	client := &http.Client{}
-	baseURL := "http://" + s.host + ":" + s.port
 
 	urls := map[string]func(*http.Response){
-		baseURL + "/v1/vpn/status":            handleStatus,
-		baseURL + "/v1/publicip/ip":           handlePublicIP,
-		baseURL + "/v1/openvpn/portforwarded": handlePortForward,
+		s.url + "/v1/vpn/status":            handleStatus,
+		s.url + "/v1/publicip/ip":           handlePublicIP,
+		s.url + "/v1/openvpn/portforwarded": handlePortForward,
 	}
 
 	for url, handler := range urls {
@@ -72,8 +71,6 @@ func handleStatus(resp *http.Response) {
 	if !ok {
 		value = -2 // Unknown status
 	}
-
-	logger.Infof("VPN status: %s & %f", status.Status, value)
 
 	promexporter.UpdateVPNStatus(value)
 }
