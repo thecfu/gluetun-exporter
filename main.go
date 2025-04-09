@@ -48,6 +48,7 @@ func main() {
 	// Start the metric collection loop
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
+	controlServer := gluetun.New()
 
 	for {
 		select {
@@ -55,10 +56,10 @@ func main() {
 			// Collect metrics from the control server
 			logger.Info("Updating Metrics...")
 			if bundled {
-				controlServer := gluetun.New()
-				controlServer.Collect()
+				linkstats.Scrape(interfaceName)
 			}
-			linkstats.Scrape(interfaceName)
+			controlServer.Collect()
+			logger.Info("Updated Metrics")
 		}
 	}
 }

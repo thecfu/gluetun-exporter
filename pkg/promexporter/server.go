@@ -18,9 +18,9 @@ func Serve(bundled bool) {
 	}
 
 	logger.Info("Registering metrics...")
-	RegisterLinkStats()
+	RegisterControlServerMetrics()
 	if bundled {
-		RegisterControlServerMetrics()
+		RegisterLinkStats()
 	}
 
 	http.Handle("/metrics", promhttp.Handler())
