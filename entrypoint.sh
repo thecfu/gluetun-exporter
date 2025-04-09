@@ -1,19 +1,31 @@
 #!/bin/sh
-# Start the exporter in the background
-/opt/gluetun-exporter &
 
-# Capture the PID of the exporter
+# Start the first process
+/opt/gluetun-exporter &
 EXPORTER_PID=$!
 
-# Run the gluetun entrypoint as a foreground process
-/gluetun-entrypoint
+# Start the second process
+/gluetun-entrypoint &
+GLUETUN_PID=$!
 
-# Wait for the exporter to exit and then return the exit status
-wait $EXPORTER_PID
-EXIT_CODE=$?
+# Function to clean up and exit
+cleanup_and_exit() {
+    echo "Exiting..."
+    kill $EXPORTER_PID $GLUETUN_PID 2>/dev/null
+    exit 1
+}
 
-# If exporter fails, exit with the same code
-if [ $EXIT_CODE -ne 0 ]; then
-  echo "Exporter exited with error code $EXIT_CODE, stopping the container."
-  exit $EXIT_CODE
-fi
+# Monitor the processes
+while true; do
+    if ! kill -0 $EXPORTER_PID 2>/dev/null; then
+        echo "gluetun-exporter stopped!"
+        cleanup_and_exit
+    fi
+
+    if ! kill -0 $GLUETUN_PID 2>/dev/null; then
+        echo "gluetun stopped!"
+        cleanup_and_exit
+    fi
+
+    sleep 1
+done
