@@ -21,11 +21,10 @@ COPY --from=build /tmp/gobuild/gluetun-exporter /opt/gluetun-exporter
 EXPOSE 8001/tcp
 
 # Set the default ENVIRONMENT variables
-ENV GLUETUN_HOST=gluetun\
+ENV GLUETUN_URL=\
     GLUETUN_PASSWORD=\
     GLUETUN_USERNAME=\
     GLUETUN_APIKEY=\
-    GLUETUN_PORT=8000\
     EXPORTER_PORT=8001\
     EXPORTER_INTERVAL=30\
     EXPORTER_BUNDLED=false\
