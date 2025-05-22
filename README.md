@@ -9,6 +9,9 @@ A Promtheus Exporter for the [VPN Client Gluetun](https://github.com/qdm12/gluet
 - Forwarded Ports
 - Connection Status
 
+### Grafana Dashboards
+For example Dashboards please have a look at [Dashboards](docs/dashboards).
+
 ## Installation
 
 ### Standalone
